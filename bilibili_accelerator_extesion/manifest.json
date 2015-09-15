@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+
+  "name": "B站视频加速工具",
+  "description": "B站视频加速工具 Author: Chion82",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+
+  "permissions": [
+    "<all_urls>",
+    "webRequest",
+    "webRequestBlocking",
+    "activeTab",
+    "tabs"
+  ],
+
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}
