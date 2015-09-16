@@ -155,7 +155,7 @@ function test_video_speed(url, callback) {
   xhr.open("GET", url + '&rand=' + getRandomInt(10000000,99999999) , true);
   xhr.timeout = 3*1000;
   xhr.onreadystatechange = function() {
-    if (xhr.response.length >= 512*1024) {
+    if (xhr.response.length >= 1024*1024) {
       xhr.abort();
       console.log('url=' + url + '; time_count=' + time_count);
       callback(time_count, url);
