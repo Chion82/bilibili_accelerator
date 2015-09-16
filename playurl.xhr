@@ -1,0 +1,25 @@
+http://interface.bilibili.com/playurl?cid=4545159&player=1&ts=1442379096&sign=76ae3fc372f5e016991ee23b262fab86
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<video>
+	<result>suee</result>
+	<timelength>90000</timelength>
+	<format><![CDATA[flv]]></format>
+	<accept_format><![CDATA[mp4,flv]]></accept_format>
+	<accept_quality><![CDATA[3,0]]></accept_quality>
+	<from><![CDATA[local]]></from>
+	<seek_param><![CDATA[start]]></seek_param>
+	<seek_type><![CDATA[offset]]></seek_type>
+	<src>0</src>
+	<durl>
+		<order>1</order>
+		<length>90000</length>
+		<size>19761150</size>
+		<url><![CDATA[http://ws.acgvideo.com/2/84/4541284-1.flv?wsTime=1442406900&wsSecret=3bccd99c0b151915dcb763efbd15809b]]></url>
+		<backup_url>
+		<url><![CDATA[http://cc.acgvideo.com/201509161239/542af7493394f5a3182d6650926ee5e3/5/46/4541284-1.flv]]></url>
+		<url><![CDATA[http://ws.acgvideo.com/2/84/4541284-1.mp4?wsTime=1442406900&wsSecret=a29e125f185b259f249b3e82538bdfae]]></url>
+		</backup_url>
+	</durl>
+</video>
