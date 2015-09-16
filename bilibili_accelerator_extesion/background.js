@@ -72,7 +72,7 @@ var on_before_request_listener = function(details) {
   if (!enabled) {
     return;
   }
-  if (details.url.includes('http://ws.acgvideo.com') || details.url.includes('http://cc.acgvideo.com') || details.url.includes(bili_cdn)) {
+  if (details.url.includes('http://ws.acgvideo.com') || details.url.includes('http://cc.acgvideo.com') || (details.url.includes(bili_cdn) && bili_cdn.trim() != '')) {
     return;
   }
   if (details.type == 'xmlhttprequest') {
@@ -106,11 +106,12 @@ var stop_intercept = function() {
 var get_bili_cdn = function() {
   chrome.storage.local.get(function(data){
     if (!data.bili_cdn) {
+      bili_cdn = '';
       return;
     }
-    if (data.bili_cdn.trim() === '') {
+   /* if (data.bili_cdn.trim() === '') {
       return;
-    }
+    }*/
     bili_cdn = data.bili_cdn;
   });
 }
