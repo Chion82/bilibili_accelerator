@@ -72,8 +72,10 @@ var on_before_request_listener = function(details) {
   if (!enabled) {
     return;
   }
-  if (details.url.includes('http://ws.acgvideo.com') || details.url.includes('http://cc.acgvideo.com') || (details.url.includes(bili_cdn) && bili_cdn.trim() != '')) {
-    return;
+  if (bili_cdn.trim() != '') {
+    if (details.url.includes('http://ws.acgvideo.com') || details.url.includes('http://cc.acgvideo.com') || details.url.includes(bili_cdn)) {
+      return;
+    }
   }
   if (details.type == 'xmlhttprequest') {
     return;
