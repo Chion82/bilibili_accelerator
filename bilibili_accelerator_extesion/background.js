@@ -48,7 +48,7 @@ var save_bili_cdn = function(new_cdn) {
 }
 
 chrome.webRequest.onHeadersReceived.addListener(on_headers_received_listener, 
-  {urls: ["http://*.acgvideo.com/*"]},
+  {urls: ["http://ws.acgvideo.com/*", "http://cc.acgvideo.com/*"]},
   ["blocking", "responseHeaders"]);
 
 get_bili_cdn();
