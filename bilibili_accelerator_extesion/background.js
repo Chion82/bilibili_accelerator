@@ -73,7 +73,7 @@ var on_before_request_listener = function(details) {
     return;
   }
   if (bili_cdn.trim() != '') {
-    if (details.url.includes('http://ws.acgvideo.com') || details.url.includes('http://cc.acgvideo.com') || details.url.includes(bili_cdn)) {
+    if (details.url.includes('http://ws.acgvideo.com') || details.url.includes(bili_cdn)) {
       return;
     }
   }
@@ -129,7 +129,7 @@ chrome.webRequest.onBeforeRequest.addListener(on_before_request_listener,
   ["blocking"]);
 
 chrome.webRequest.onHeadersReceived.addListener(on_headers_received_listener, 
-  {urls: ["http://ws.acgvideo.com/*", "http://cc.acgvideo.com/*"]},
+  {urls: ["http://ws.acgvideo.com/*"]},
   ["blocking", "responseHeaders"]);
 
 chrome.webRequest.onBeforeRequest.addListener(video_url_listener,
