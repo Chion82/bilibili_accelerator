@@ -5,6 +5,7 @@ bili_cdn = '36.250.74.110';
 var speed_test_result = [];
 var speed_test_completed = true;
 var best_url = '';
+var url_list = [];
 
 var on_headers_received_listener = function(details) {
   if (!enabled) {
@@ -40,31 +41,39 @@ var video_url_listener = function(details) {
   console.log('Fetching URL list');
   speed_test_result = [];
   speed_test_completed = false;
+  url_list = [];
   url_regex = /<url><\!\[CDATA\[(.+?)\]\]><\/url>/g;
-  var url_count = 0;
   var xhr = new XMLHttpRequest();
   xhr.open("GET", details.url, true);
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
       while (url_match_result = url_regex.exec(xhr.responseText)) {
         url = url_match_result[1];
-        url_count++;
-        test_video_speed(url, function(time_count, current_url){
-          speed_test_result.push(time_count);
-          if (Math.min.apply(Math, speed_test_result) == time_count) {
-            best_url = current_url;
-          }
-          console.log('speed_test_result.length = ' + speed_test_result.length);
-          if (speed_test_result.length==url_count) {
-            console.log('Test completed.');
-            speed_test_completed = true;
-          }
-        });
+        url_list.push(url);
       }
-      console.log('Total url count = ' + url_count);
+      console.log('Total url count = ' + url_list.length);
+      init_speed_test(0);
     }
   }
   xhr.send();
+}
+
+var init_speed_test = function(url_index) {
+  var url = url_list[url_index];
+  test_video_speed(url, function(time_count, current_url){
+    speed_test_result.push(time_count);
+    if (Math.min.apply(Math, speed_test_result) == time_count) {
+      best_url = current_url;
+    }
+    console.log('speed_test_result.length = ' + speed_test_result.length);
+    if (speed_test_result.length == url_list.length) {
+      console.log('Test completed.');
+      speed_test_completed = true;
+    }
+    if (url_index < url_list.length - 1) {
+      init_speed_test(url_index + 1);
+    }
+  });
 }
 
 var last_time_stamp = 0;
@@ -144,16 +153,16 @@ function test_video_speed(url, callback) {
   var time_count = 0;
   var time_count_interval = setInterval(function(){
     time_count++;
-    if (time_count > 3*1000) {
-      console.log('url=' + url + '; timeout;');
+    if (time_count > 5*1000) {
+      console.log('url=' + url + '; download timeout;');
       callback(99999999, url);
       xhr.abort();
       clearInterval(time_count_interval);
     }
   }, 1);
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", url + '&rand=' + getRandomInt(10000000,99999999) , true);
-  xhr.timeout = 3*1000;
+  xhr.open("GET", url + (url.includes('?')?'&rand=':'?rand=') + getRandomInt(100000,999999), true);
+  xhr.timeout = 7*1000;
   xhr.onreadystatechange = function() {
     if (xhr.response.length >= 1024*1024) {
       xhr.abort();
@@ -163,7 +172,7 @@ function test_video_speed(url, callback) {
     }
   }
   xhr.ontimeout = function() {
-    console.log('url=' + url + '; timeout;');
+    console.log('url=' + url + '; connection timeout;');
     callback(99999999, url);
     clearInterval(time_count_interval);
   }
