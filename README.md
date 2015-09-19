@@ -10,7 +10,7 @@ Bilibili accelerator is a Chrome extension which helps you accelerate the loadin
 
 * Click the activate button and that's it. Browse bilibili.com and enjoy watching the accelerated videos.
 
-* If your network status is extremely sucked, try locking the CDN IP for videos with ```http://ws.acgvideo.com``` prefixed URLs. This can be done by the following steps:
+* If your network status extremely sucks, try locking the CDN IP for videos with ```http://ws.acgvideo.com``` prefixed URLs. This can be done by the following steps:
 
 	- Enter one of these IP addresses in the popup panel and click "Save Bili CDN". The IPs below are well optimal CDN servers for the China Education and Research Network. You can also enter a customized IP which is the best proxy for ```ws.acgvideo.com``` in your network environment.
 
