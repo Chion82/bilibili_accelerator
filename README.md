@@ -8,7 +8,7 @@ Bilibili accelerator is a Chrome extension which helps you accelerate the loadin
 
 * Simply drag the ```bilibili_accelerator_extension.crx``` to your Chrome extension management page.
 
-* Click the activate button and that's it. Browser bilibili.com and enjoy watching the accelerated videos.
+* Click the activate button and that's it. Browse bilibili.com and enjoy watching the accelerated videos.
 
 * If your network status is extremely sucked, try locking the CDN IP for videos with ```http://ws.acgvideo.com``` prefixed URLs. This can be done by the following steps:
 
