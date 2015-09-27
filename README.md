@@ -22,4 +22,4 @@ Bilibili accelerator is a Chrome extension which helps you accelerate the loadin
 
 #Note
 
-* When the extension is activated, initializing a video costs up to 30-60 seconds. This is because the extension is performing speed tests and any video requests prior to the completion of the tests are rejected, causing the flash player to continuously retry. This also explains why connection failures occur when the player is loading a video.
+* When the extension is activated, initializing a video costs up to 30-60 seconds because the extension is performing speed tests and any video requests prior to the completion of the tests are rejected, causing the flash player to continuously retry. This also explains why connection failures occur when the player is loading a video.
