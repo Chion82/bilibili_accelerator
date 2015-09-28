@@ -16,7 +16,8 @@
     "webRequestBlocking",
     "activeTab",
     "tabs",
-    "storage"
+    "storage",
+    "proxy"
   ],
 
   "background": {

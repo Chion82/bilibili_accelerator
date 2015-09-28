@@ -11,7 +11,8 @@
     <style>
       body {
         font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-        font-size: 100%;
+        font-size: 14px;
+        width:300px;
       }
     </style>
 
@@ -19,9 +20,12 @@
   <body>
     <button style="width:200px;" id="main_btn">启用</button>
     <br/>
-    <span style="font-size:14px;">锁定ws.acgvideo.com的CDN IP: (留空则禁用)</span>
+    <span>锁定ws.acgvideo.com的CDN IP: (留空则禁用)</span>
     <input type="text" id="bili_cdn_input">
     <button id="bili_cdn_change">更改CDN</button>
+    <br />
+    <input type="checkbox" id="enable_proxy_check">使用socks5 127.0.0.1:1080代理B站视频</input>
+    <br />
 
     <a href="#" id="web_link">bilibili</a>
 

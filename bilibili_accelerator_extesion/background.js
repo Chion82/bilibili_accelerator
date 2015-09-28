@@ -1,5 +1,7 @@
 var enabled = false;
 
+var enable_proxy = false;
+
 bili_cdn = '36.250.74.110';
 
 var speed_test_result = [];
@@ -51,8 +53,10 @@ var video_url_listener = function(details) {
         url = url_match_result[1];
         url_list.push(url);
       }
-      console.log('Total url count = ' + url_list.length);
-      init_speed_test(0);
+      apply_proxy_setting(function(){
+        console.log('Total url count = ' + url_list.length);
+        init_speed_test(0);
+      });
     }
   }
   xhr.send();
@@ -69,6 +73,9 @@ var init_speed_test = function(url_index) {
     if (speed_test_result.length == url_list.length) {
       console.log('Test completed.');
       speed_test_completed = true;
+      setTimeout(function(){
+        clear_proxy();
+      }, 10000);
     }
     if (url_index < url_list.length - 1) {
       init_speed_test(url_index + 1);
@@ -133,6 +140,53 @@ var save_bili_cdn = function(new_cdn) {
   });
 }
 
+var get_proxy_setting = function() {
+  chrome.storage.local.get(function(data){
+    if (!data.proxy_enabled) {
+      enable_proxy = false;
+    } else {
+      enable_proxy = data.proxy_enabled;
+    }
+    console.log('enable_proxy = ' + enable_proxy);
+  }); 
+}
+
+var save_proxy_setting = function(proxy_setting) {
+  chrome.storage.local.set({'proxy_enabled': proxy_setting}, function(){
+    get_proxy_setting();
+  });
+}
+
+var apply_proxy_setting = function(callback) {
+  if (!enable_proxy) {
+    callback();
+    return;
+  }
+  var config = {
+    mode: "fixed_servers",
+    rules: {
+      singleProxy: {
+        scheme: "socks5",
+        host: "127.0.0.1",
+        port: 1080
+      }
+    }
+  };
+  chrome.proxy.settings.set({value: config, scope: 'regular'}, function() {
+    console.log('Proxy set.');
+    callback();
+  });
+}
+
+var clear_proxy = function() {
+  if (!enable_proxy) {
+    return;
+  }
+  chrome.proxy.settings.clear({scope: 'regular'}, function() {
+    console.log('Proxy cleared.');
+  });
+}
+
 chrome.webRequest.onBeforeRequest.addListener(on_before_request_listener, 
   {urls: ["http://*.acgvideo.com/*"]},
   ["blocking"]);
@@ -146,6 +200,8 @@ chrome.webRequest.onBeforeRequest.addListener(video_url_listener,
   ["blocking"]);
 
 get_bili_cdn();
+
+get_proxy_setting();
 
 
 function test_video_speed(url, callback) {
