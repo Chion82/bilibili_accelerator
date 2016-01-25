@@ -2,6 +2,8 @@
 
 #Changelog
 
+1.26 境外代理已不可用；加速流程更改；增加测试纪录显示。
+
 9.29 Add socks5 proxy option. You can now use ShadowSocks to boost video loading.  
 	更新socks5代理功能。现在可以通过ShadowSocks代理加速视频，效果显著！SS代理服务器不需要国内IP，插件可自动解决国外版权问题。推荐自建亚洲SS服务器（如日本conoha、DO新加坡节点），加速效果更明显。
 
