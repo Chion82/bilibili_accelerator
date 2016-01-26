@@ -158,9 +158,9 @@ var on_before_request_listener = function(details) {
   if (!enabled) {
     return;
   }
-  if (current_tab_id === -1) {
-    return;
-  }
+  //if (current_tab_id === -1) {
+  //  return;
+  //}
   if (bili_cdn.trim() !== '') {
     if (details.url.includes('http://ws.acgvideo.com') || details.url.includes(bili_cdn)) {
       return;
@@ -172,7 +172,7 @@ var on_before_request_listener = function(details) {
   if (details.url.includes('crossdomain.xml')) {
     return;
   }
-  console.log('New video connection. type=' + details.type);
+  console.log('New video connection. type=' + details.type + '; url=' + details.url);
   if (!speed_test_completed) {
     console.log('Speed test not finished. Cancelling.')
     return {cancel: true};
@@ -184,11 +184,35 @@ var on_before_request_listener = function(details) {
     last_redirect_time = details.timeStamp;
   }
   console.log('Selecting fastest url: ' + best_url);
-  chrome.tabs.executeScript(current_tab_id, {code: "document.getElementById('bilibili_accelerator_box').innerHTML += '<br/>选择最优线路...';"}, function(response) {
+  var best_host = /http:\/\/(.+?)\/.*?/.exec(best_url)[1];
+  if (url_list.length === 0) {
+    return;
+  }
+  var file_name = /\/([^\/]+?\.(flv|mp4))/.exec(details.url)[1];
+  console.log('filename = ' + file_name);
+  var new_url = url_list[0];
+  for (index in url_list) {
+    if (url_list[index].includes(file_name)) {
+      new_url = url_list[index];
+    }
+  }
+  for (index in url_list) {
+    if (url_list[index].includes('http://' + best_host) && url_list[index].includes(file_name)) {
+      console.log('Best matched url found.');
+      new_url = url_list[index];
+    }
+  }
+  console.log('Redirecting to: ' + new_url);
+  try {
+    if (current_tab_id !== -1)
+      chrome.tabs.executeScript(current_tab_id, {code: "document.getElementById('bilibili_accelerator_box').innerHTML += '<br/>选择最优线路...';"}, function(response) {
 
-  });
+      });
+  } catch (err) {
+
+  }
   if (best_url != '') {
-    return {redirectUrl: best_url};
+    return {redirectUrl: new_url};
   }
 }
 
