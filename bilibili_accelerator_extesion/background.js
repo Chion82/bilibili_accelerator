@@ -182,6 +182,10 @@ var on_before_request_listener = function(details) {
   }
   console.log('Selecting fastest url: ' + best_url);
   var best_host = /http:\/\/(.+?)\/.*?/.exec(best_url)[1];
+  var request_host = /http:\/\/(.+?)\/.*?/.exec(details.url)[1];
+  if (best_host === request_host) {
+    return;
+  }
   if (url_list.length === 0) {
     return;
   }
