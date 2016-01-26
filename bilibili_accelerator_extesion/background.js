@@ -10,7 +10,6 @@ var best_url = '';
 var url_list = [];
 var current_tab_id = -1;
 var current_testing_id = -1;
-var last_redirect_time = 0;
 
 var inject_html = "<div style='position:fixed;right:0px;bottom:0px;background-color:blue;color:white;z-index:9999999;' id='bilibili_accelerator_box'>Bilibili Accelerator初始化中</div>";
 var inject_html_reloaded = "<div style='position:fixed;right:0px;bottom:0px;background-color:blue;color:white;z-index:9999999;' id='bilibili_accelerator_box'>Bilibili Accelerator运行中</div>";
@@ -58,7 +57,7 @@ var on_headers_received_listener = function(details) {
   return {responseHeaders: headers};
 }
 
-var all_test_completed = false;
+var required_tab_reload = false;
 var video_url_listener = function(details) {
   if (!enabled) {
     return;
@@ -70,9 +69,8 @@ var video_url_listener = function(details) {
     return;
   }
 
-  if (all_test_completed && best_url != '') {
-    last_redirect_time = 0;
-    all_test_completed = false;
+  if (required_tab_reload && best_url != '') {
+    required_tab_reload = false;
 
     chrome.tabs.executeScript(current_tab_id, {code: inject_script_function + "appendHtml(document.body,\"" + inject_html_reloaded + "\");"}, function(response) {
       
@@ -145,7 +143,7 @@ var init_speed_test = function(url_index) {
       console.log('Reloading tab');
       clear_proxy(function() {
         chrome.tabs.reload(current_tab_id);
-        all_test_completed = true;
+        required_tab_reload = true;
       });
     }
     if (url_index < url_list.length - 1) {
@@ -154,6 +152,7 @@ var init_speed_test = function(url_index) {
   });
 }
 
+last_redirect_url = '';
 var on_before_request_listener = function(details) {
   if (!enabled) {
     return;
@@ -172,16 +171,14 @@ var on_before_request_listener = function(details) {
   if (details.url.includes('crossdomain.xml')) {
     return;
   }
+  if (last_redirect_url === details.url) {
+    console.log('In-browser redirection detected. Ignoring.')
+    return;
+  }
   console.log('New video connection. type=' + details.type + '; url=' + details.url);
   if (!speed_test_completed) {
     console.log('Speed test not finished. Cancelling.')
     return {cancel: true};
-  }
-  if (details.timeStamp - last_redirect_time < 3*1000) {
-    console.log('In-browser redirection detected. Ignoring.')
-    return;
-  } else {
-    last_redirect_time = details.timeStamp;
   }
   console.log('Selecting fastest url: ' + best_url);
   var best_host = /http:\/\/(.+?)\/.*?/.exec(best_url)[1];
@@ -202,7 +199,7 @@ var on_before_request_listener = function(details) {
       new_url = url_list[index];
     }
   }
-  console.log('Redirecting to: ' + new_url);
+  
   try {
     if (current_tab_id !== -1)
       chrome.tabs.executeScript(current_tab_id, {code: "document.getElementById('bilibili_accelerator_box').innerHTML += '<br/>选择最优线路...';"}, function(response) {
@@ -212,6 +209,12 @@ var on_before_request_listener = function(details) {
 
   }
   if (best_url != '') {
+    var match = /start=([0-9]+)/.exec(details.url);
+    if (match) {
+      new_url += ((new_url.includes('?')?'&':'?') + 'start=' + match[1]);
+    }
+    console.log('Redirecting to: ' + new_url);
+    last_redirect_url = new_url;
     return {redirectUrl: new_url};
   }
 }
@@ -392,7 +395,7 @@ var handle_abort = function(tab_id, remove_info) {
   if (tab_id !== current_tab_id) {
     return;
   }
-  if (all_test_completed) {
+  if (required_tab_reload) {
     return;
   }
   try {
@@ -404,7 +407,6 @@ var handle_abort = function(tab_id, remove_info) {
   }
   current_tab_id = -1;
   console.log('Abort.');
-  last_best_url_found = 0;
   speed_test_completed = true;
   clear_proxy();
 }
